@@ -118,8 +118,8 @@ matchmake = function(user) {
     matched.status = "playing";
     pools.playing.unshift(user.token);
     pools.playing.unshift(matched.token);
-    match.user1.socket.emit("matchFound", {other: match.user2.name});
-    match.user2.socket.emit("matchFound", {other: match.user1.name});
+    match.user1.socket.emit("matchFound", {other: match.user2.token});
+    match.user2.socket.emit("matchFound", {other: match.user1.token});
     console.log(pools);
     return match;
   } else {
