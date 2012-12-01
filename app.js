@@ -57,6 +57,11 @@ io.sockets.on('connection', function(socket) {
       console.log(user.match.nextSong);
       console.log(user.match.round);
       var toPlay = {song: user.match.nextSong, turn: user.match.round };
+      if(user.match.round == user.token) {
+        user.match.round = opp.token;
+      } else {
+        user.match.round = user.token;
+      }
       socket.emit("play", toPlay);
       opp.socket.emit("play", toPlay);
     }
@@ -84,6 +89,10 @@ io.sockets.on('connection', function(socket) {
 });
 
 redisPubSub.on('message', function(channel, message) {
+  var msg = JSON.parse(message);
+  if(msg.type == "jukes_update") {
+    users[msg.user_id].socket.emit("jukesUpdated", msg.jukes)
+  }
 });
 
 redisPubSub.on('ready', function() {
