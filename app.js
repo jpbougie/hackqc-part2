@@ -50,7 +50,8 @@ io.sockets.on('connection', function(socket) {
 
   socket.on("readyForNext", function(songId) {
     user.ready = true;
-    if(user.match && opponent(user).ready) {
+    console.log("readyForNext")
+    if(user.match && opponent(user).ready && user.match.nextSong) {
       var opp = opponent(user);
       user.ready = false;
       opponent(user).ready = false;
@@ -62,6 +63,9 @@ io.sockets.on('connection', function(socket) {
       } else {
         user.match.round = user.token;
       }
+      user.match.nextSong = null;
+      user.nextSong = null;
+      opp.nextSong = null;
       socket.emit("play", toPlay);
       opp.socket.emit("play", toPlay);
     }
