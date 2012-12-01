@@ -21,15 +21,22 @@
 
         socket.on('waiting', function(data) {
           debug("Waiting for an opponent...")
+          socket.emit("nextSong", "1234");
         });
 
         socket.on('matchFound', function(data) { 
           debug("Opponent found: " + data.other)
+          socket.emit("readyForNext");
         });
         
         socket.on("matchEnded", function() {
           debug("Match ended");
         });
+        
+        socket.on("play", function(data) {
+          console.log(data);
+          debug("Play " + data.song);
+        })
       });
     </script>
   </head>

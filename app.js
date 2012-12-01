@@ -23,7 +23,7 @@ app.use(express.static(__dirname + '/public'));
 server.listen(process.env.PORT || 9191);
 
 io.sockets.on('connection', function(socket) {
-  var user = {socket: socket, skipped: [], status: "pendingAuth", match: null};
+  var user = {socket: socket, skipped: [], status: "pendingAuth", match: null, nextSong: null};
   socket.emit("authChallenge", {});
   socket.on("authResponse", function(message) {
     user.token = message.token;
@@ -38,7 +38,30 @@ io.sockets.on('connection', function(socket) {
     var opp = opponent(user);
     endMatch(user.match, "left");
   });
-  
+
+  socket.on('nextSong', function(songId) {
+    console.log("nextSong!")
+    console.log(songId)
+    user.nextSong = songId;
+    if(user.match && user.match.round != user.token) {
+      user.match.nextSong = songId
+    }
+  });
+
+  socket.on("readyForNext", function(songId) {
+    user.ready = true;
+    if(user.match && opponent(user).ready) {
+      var opp = opponent(user);
+      user.ready = false;
+      opponent(user).ready = false;
+      console.log(user.match.nextSong);
+      console.log(user.match.round);
+      var toPlay = {song: user.match.nextSong, turn: user.match.round };
+      socket.emit("play", toPlay);
+      opp.socket.emit("play", toPlay);
+    }
+  });
+
   socket.on('disconnect', function() {
     console.log("disconnect!")
     console.log(user.status);
@@ -88,7 +111,7 @@ matchmake = function(user) {
   matched = pools.available.shift();
   if(typeof(matched) != 'undefined') {
     matched = users[matched];
-    match = {user1: user, user2: matched};
+    match = {user1: user, user2: matched, nextSong: matched.nextSong, round: matched.token};
     user.match = match;
     matched.match = match;
     user.status = "playing";
