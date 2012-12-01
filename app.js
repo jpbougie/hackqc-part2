@@ -27,7 +27,7 @@ io.sockets.on('connection', function(socket) {
   socket.emit("authChallenge", {});
   socket.on("authResponse", function(message) {
     user.token = message.token;
-    user.name = message.name;
+    user.name = message.username;
     user.status = "authAccepted";
     users[user.token] = user;
     matchmake(user);
