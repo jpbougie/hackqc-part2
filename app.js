@@ -96,6 +96,7 @@ redisPubSub.on('message', function(channel, message) {
 });
 
 redisPubSub.on('ready', function() {
+  redisPubSub.subscribe("jukevox");
 });
 
 endMatch = function(match, reason) {
