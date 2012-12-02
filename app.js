@@ -43,7 +43,7 @@ io.sockets.on('connection', function(socket) {
     console.log("nextSong!")
     console.log(songId)
     user.nextSong = songId;
-    if(user.match && user.match.round != user.token) {
+    if(user.match && user.match.round == user.token) {
       user.match.nextSong = songId
     }
   });
