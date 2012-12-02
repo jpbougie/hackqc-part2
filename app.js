@@ -57,15 +57,16 @@ io.sockets.on('connection', function(socket) {
       opponent(user).ready = false;
       console.log(user.match.nextSong);
       console.log(user.match.round);
-      var toPlay = {song: user.match.nextSong, turn: user.match.round };
       if(user.match.round == user.token) {
         user.match.round = opp.token;
       } else {
         user.match.round = user.token;
       }
+      var toPlay = {song: user.match.nextSong, turn: user.match.round };
       user.match.nextSong = null;
       user.nextSong = null;
       opp.nextSong = null;
+      console.log(toPlay);
       socket.emit("play", toPlay);
       opp.socket.emit("play", toPlay);
     }
